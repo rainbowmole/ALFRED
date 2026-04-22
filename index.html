@@ -6,200 +6,229 @@
   <title>Alfred - Your Personal AI Assistant</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></link>
-  <style>
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
-    .nav-item.active { background-color: #374151; }
-  </style>
+  <link rel="stylesheet" href="css/styles.css">
 </head>
-<body class="bg-gray-900 text-white min-h-screen">
-  <div class="flex h-screen">
-    <!-- Sidebar Navigation -->
-    <nav class="w-64 bg-gray-800 flex flex-col">
-      <div class="p-4 border-b border-gray-700">
-        <h1 class="text-2xl font-bold text-amber-500">🤖 Alfred</h1>
-        <p class="text-xs text-gray-400 mt-1">Your Personal AI Assistant</p>
+<body class="app-body text-white min-h-screen">
+  <div class="app-background"></div>
+
+  <div class="app-shell">
+    <aside class="app-sidebar">
+      <div class="brand-panel">
+        <div class="brand-mark">🤖</div>
+        <div>
+          <h1>Alfred</h1>
+          <p>Your personal AI assistant</p>
+        </div>
       </div>
 
-      <div class="flex-1 py-4">
-        <a href="#chat" class="nav-item active block px-4 py-3 hover:bg-gray-700 transition" data-tab="chat">
-          💬 Chat
-        </a>
-        <a href="#todos" class="nav-item block px-4 py-3 hover:bg-gray-700 transition" data-tab="todos">
-          ✅ To-Do
-        </a>
-        <a href="#habits" class="nav-item block px-4 py-3 hover:bg-gray-700 transition" data-tab="habits">
-          📊 Habits
-        </a>
-        <a href="#settings" class="nav-item block px-4 py-3 hover:bg-gray-700 transition" data-tab="settings">
-          ⚙️ Settings
-        </a>
-      </div>
+      <nav class="tab-nav" aria-label="Primary navigation">
+        <a href="#chat" class="nav-item active" data-tab="chat">💬 Chat</a>
+        <a href="#todos" class="nav-item" data-tab="todos">✅ To-Do</a>
+        <a href="#habits" class="nav-item" data-tab="habits">📊 Habits</a>
+        <a href="#settings" class="nav-item" data-tab="settings">⚙️ Settings</a>
+      </nav>
 
-      <div class="p-4 border-t border-gray-700">
-        <div id="status-indicator" class="text-xs text-gray-400">
-          <span class="inline-block w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+      <div class="sidebar-status">
+        <span class="status-dot"></span>
+        <div id="status-indicator" class="status-copy">
           <span id="status-text">Ready</span>
         </div>
       </div>
-    </nav>
+    </aside>
 
-    <!-- Main Content -->
-    <main class="flex-1 overflow-auto">
-      <!-- Chat Tab -->
-      <div id="chat" class="tab-content active h-full flex flex-col">
-        <div class="flex-1 overflow-auto p-4" id="chat-messages">
-          <div class="max-w-3xl mx-auto space-y-4">
-            <div class="flex items-start gap-3">
-              <div class="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center text-sm">🤖</div>
-              <div class="bg-gray-800 rounded-lg p-3 max-w-[80%]">
-                <p>Hello! I'm Alfred, your personal AI assistant. How can I help you today?</p>
+    <main class="workspace">
+      <header class="workspace-header panel-card">
+        <div>
+          <p class="eyebrow" id="active-tab-kicker">Assistant workspace</p>
+          <h2 id="active-tab-title">Chat</h2>
+          <p id="active-tab-description">A focused conversation surface for Alfred.</p>
+        </div>
+        <div class="header-metadata">
+          <span class="chip">Single-shell app</span>
+          <span class="chip chip-muted">Hash routing enabled</span>
+        </div>
+      </header>
+
+      <section id="chat" class="tab-content active view-panel" data-title="Chat" data-kicker="Assistant workspace" data-description="A focused conversation surface for Alfred.">
+        <div class="view-layout view-layout-chat">
+          <article class="panel-card conversation-stage">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Conversation</p>
+                <h3>Chat with Alfred</h3>
+              </div>
+              <p class="panel-copy">One thread at a time, designed like a focused workspace instead of a long page.</p>
+            </div>
+
+            <div class="chat-stream" id="chat-messages">
+              <div class="message message-assistant">
+                <div class="message-avatar">🤖</div>
+                <div class="message-bubble">
+                  <p>Hello! I'm Alfred, your personal AI assistant. How can I help you today?</p>
+                </div>
               </div>
             </div>
+
+            <div class="composer-shell">
+              <form id="chat-form" class="composer-form">
+                <input
+                  type="text"
+                  id="chat-input"
+                  placeholder="Ask Alfred anything..."
+                  class="composer-input"
+                >
+                <button type="submit" class="primary-button">Send</button>
+              </form>
+            </div>
+          </article>
+
+          <aside class="panel-card side-rail">
+            <div class="panel-head stacked">
+              <div>
+                <p class="eyebrow">Focus</p>
+                <h3>What this view does</h3>
+              </div>
+              <p class="panel-copy">The chat tab is now a dedicated workspace with its own hierarchy and breathing room.</p>
+            </div>
+
+            <div class="info-stack">
+              <div class="mini-card">
+                <span class="mini-label">Shortcut</span>
+                <strong>Ctrl + K</strong>
+                <p>Jump straight back into chat from anywhere.</p>
+              </div>
+              <div class="mini-card">
+                <span class="mini-label">Routing</span>
+                <strong>Hash-based tabs</strong>
+                <p>Each section now has its own addressable state.</p>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="todos" class="tab-content view-panel" data-title="To-Do" data-kicker="Task management" data-description="Plan and sort work in a dedicated task view.">
+        <article class="panel-card page-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Task board</p>
+              <h3>To-Do List</h3>
+            </div>
+            <p class="panel-copy">Tasks live in a dedicated view with clear hierarchy, status, and priority controls.</p>
           </div>
-        </div>
-        <div class="border-t border-gray-700 p-4">
-          <form id="chat-form" class="max-w-3xl mx-auto flex gap-2">
-            <input
-              type="text"
-              id="chat-input"
-              placeholder="Ask Alfred anything..."
-              class="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:border-amber-500"
-            >
-            <button type="submit" class="bg-amber-500 hover:bg-amber-600 px-4 py-2 rounded-lg font-medium transition">
-              Send
-            </button>
-          </form>
-        </div>
-      </div>
 
-      <!-- To-Do Tab -->
-      <div id="todos" class="tab-content p-6">
-        <div class="max-w-3xl mx-auto">
-          <h2 class="text-2xl font-bold mb-4">To-Do List</h2>
-          <form id="todo-form" class="flex gap-2 mb-6">
-            <input
-              type="text"
-              id="todo-input"
-              placeholder="Add a new task..."
-              class="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:border-amber-500"
-            >
-            <button type="submit" class="bg-amber-500 hover:bg-amber-600 px-4 py-2 rounded-lg font-medium transition">
-              Add Task
-            </button>
+          <form id="todo-form" class="stack-form">
+            <input type="text" id="todo-input" placeholder="Add a new task..." class="stack-input">
+            <button type="submit" class="primary-button">Add Task</button>
           </form>
-          <div id="todo-list" class="space-y-2">
-            <p class="text-gray-400 text-center py-8">No tasks yet. Add one above!</p>
+
+          <div id="todo-list" class="stack-list">
+            <p class="empty-state">No tasks yet. Add one above!</p>
           </div>
-        </div>
-      </div>
+        </article>
+      </section>
 
-      <!-- Habits Tab -->
-      <div id="habits" class="tab-content p-6">
-        <div class="max-w-3xl mx-auto">
-          <h2 class="text-2xl font-bold mb-4">Habit Tracker</h2>
-          <form id="habit-form" class="flex gap-2 mb-6">
-            <input
-              type="text"
-              id="habit-input"
-              placeholder="Add a new habit..."
-              class="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:border-amber-500"
-            >
-            <button type="submit" class="bg-amber-500 hover:bg-amber-600 px-4 py-2 rounded-lg font-medium transition">
-              Add Habit
-            </button>
-          </form>
-          <div id="habit-list" class="space-y-2">
-            <p class="text-gray-400 text-center py-8">No habits tracked yet. Add one above!</p>
+      <section id="habits" class="tab-content view-panel" data-title="Habits" data-kicker="Progress tracker" data-description="Track streaks in a cleaner, more legible dashboard.">
+        <article class="panel-card page-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Streaks</p>
+              <h3>Habit Tracker</h3>
+            </div>
+            <p class="panel-copy">A more structured view for check-ins, streaks, and paused habits.</p>
           </div>
-        </div>
-      </div>
 
-      <!-- Settings Tab -->
-      <div id="settings" class="tab-content p-6">
-        <div class="max-w-3xl mx-auto">
-          <h2 class="text-2xl font-bold mb-6">Settings</h2>
+          <form id="habit-form" class="stack-form">
+            <input type="text" id="habit-input" placeholder="Add a new habit..." class="stack-input">
+            <button type="submit" class="primary-button">Add Habit</button>
+          </form>
 
-          <div class="space-y-6">
-            <!-- Supabase Config -->
-            <section class="bg-gray-800 rounded-lg p-4">
-              <h3 class="text-lg font-semibold mb-3">Supabase Configuration</h3>
-              <div class="space-y-3">
-                <div>
-                  <label class="block text-sm text-gray-400 mb-1">Supabase URL</label>
-                  <input type="text" id="supabase-url" class="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2" placeholder="https://xxx.supabase.co">
+          <div id="habit-list" class="stack-list">
+            <p class="empty-state">No habits tracked yet. Add one above!</p>
+          </div>
+        </article>
+      </section>
+
+      <section id="settings" class="tab-content view-panel" data-title="Settings" data-kicker="Configuration" data-description="Manage AI, sync, and integrations from one place.">
+        <article class="panel-card page-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Controls</p>
+              <h3>Settings</h3>
+            </div>
+            <p class="panel-copy">Settings are broken into sections so the page reads like a control panel, not a form dump.</p>
+          </div>
+
+          <div class="settings-grid">
+            <section class="settings-card">
+              <h4>Supabase Configuration</h4>
+              <div class="stack-form compact">
+                <div class="field-group">
+                  <label for="supabase-url">Supabase URL</label>
+                  <input type="text" id="supabase-url" class="stack-input" placeholder="https://xxx.supabase.co">
                 </div>
-                <div>
-                  <label class="block text-sm text-gray-400 mb-1">Supabase Anon Key</label>
-                  <input type="text" id="supabase-key" class="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2" placeholder="eyJhbG...">
+                <div class="field-group">
+                  <label for="supabase-key">Supabase Anon Key</label>
+                  <input type="text" id="supabase-key" class="stack-input" placeholder="eyJhbG...">
                 </div>
-                <div>
-                  <label class="block text-sm text-gray-400 mb-1">User ID</label>
-                  <input type="text" id="user-id" class="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2" placeholder="your@email.com">
+                <div class="field-group">
+                  <label for="user-id">User ID</label>
+                  <input type="text" id="user-id" class="stack-input" placeholder="your@email.com">
                 </div>
-                <button id="save-supabase" class="bg-amber-500 hover:bg-amber-600 px-4 py-2 rounded-lg font-medium transition">
-                  Save Configuration
-                </button>
+                <button id="save-supabase" class="primary-button">Save Configuration</button>
               </div>
             </section>
 
-            <!-- AI Provider Config -->
-            <section class="bg-gray-800 rounded-lg p-4">
-              <h3 class="text-lg font-semibold mb-3">AI Provider</h3>
-              <div class="space-y-3">
-                <div>
-                  <label class="block text-sm text-gray-400 mb-1">Primary Provider</label>
-                  <select id="ai-provider" class="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2">
+            <section class="settings-card">
+              <h4>AI Provider</h4>
+              <div class="stack-form compact">
+                <div class="field-group">
+                  <label for="ai-provider">Primary Provider</label>
+                  <select id="ai-provider" class="stack-input">
                     <option value="ollama-cloud">Ollama Cloud (Recommended)</option>
                     <option value="ollama-local">Local Ollama</option>
                     <option value="groq">Groq API</option>
                   </select>
                 </div>
-                <div>
-                  <label class="block text-sm text-gray-400 mb-1">Model</label>
-                  <input type="text" id="ai-model" class="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2" value="qwen3.5:cloud" placeholder="qwen3.5:cloud">
+                <div class="field-group">
+                  <label for="ai-model">Model</label>
+                  <input type="text" id="ai-model" class="stack-input" value="qwen3.5:cloud" placeholder="qwen3.5:cloud">
                 </div>
-                <div id="groq-key-field" class="hidden">
-                  <label class="block text-sm text-gray-400 mb-1">Groq API Key</label>
-                  <input type="text" id="groq-key" class="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2" placeholder="gsk_...">
+                <div id="groq-key-field" class="hidden field-group">
+                  <label for="groq-key">Groq API Key</label>
+                  <input type="text" id="groq-key" class="stack-input" placeholder="gsk_...">
                 </div>
-                <button id="save-ai" class="bg-amber-500 hover:bg-amber-600 px-4 py-2 rounded-lg font-medium transition">
-                  Save AI Settings
-                </button>
+                <button id="save-ai" class="primary-button">Save AI Settings</button>
               </div>
             </section>
 
-            <!-- Integration Buttons -->
-            <section class="bg-gray-800 rounded-lg p-4">
-              <h3 class="text-lg font-semibold mb-3">Integrations</h3>
-              <div class="space-y-3">
-                <button id="connect-gmail" class="w-full bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg font-medium transition">
-                  📧 Connect Gmail
-                </button>
-                <button id="connect-outlook" class="w-full bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-medium transition">
-                  📧 Connect Outlook
-                </button>
-                <button id="connect-google-cal" class="w-full bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg font-medium transition">
-                  📅 Connect Google Calendar
-                </button>
-                <div class="pt-2">
-                  <label class="block text-sm text-gray-400 mb-1">Notion Integration Token</label>
-                  <input type="text" id="notion-token" class="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2" placeholder="secret_xxx">
-                  <button id="save-notion" class="mt-2 bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg font-medium transition">
-                    Save Notion Token
-                  </button>
+            <section class="settings-card">
+              <h4>Integrations</h4>
+              <div class="stack-form compact">
+                <button id="connect-gmail" class="secondary-button danger">📧 Connect Gmail</button>
+                <button id="connect-outlook" class="secondary-button info">📧 Connect Outlook</button>
+                <button id="connect-google-cal" class="secondary-button success">📅 Connect Google Calendar</button>
+                <div class="field-group">
+                  <label for="notion-token">Notion Integration Token</label>
+                  <input type="text" id="notion-token" class="stack-input" placeholder="secret_xxx">
                 </div>
+                <button id="save-notion" class="primary-button accent">Save Notion Token</button>
               </div>
             </section>
           </div>
-        </div>
-      </div>
+        </article>
+      </section>
     </main>
   </div>
 
+  <div id="notification-container" class="notification-container"></div>
+
   <script src="js/storage.js"></script>
+  <script src="js/state.js"></script>
   <script src="js/supabase.js"></script>
+  <script src="js/ai/ollama.js"></script>
+  <script src="js/ai/groq.js"></script>
+  <script src="js/ai/cloudflare.js"></script>
   <script src="js/ai/provider.js"></script>
   <script src="js/features/chat.js"></script>
   <script src="js/features/todos.js"></script>

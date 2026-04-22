@@ -4,6 +4,29 @@
  */
 
 const Alfred = {
+    tabMeta: {
+        chat: {
+            title: 'Chat',
+            kicker: 'Assistant workspace',
+            description: 'A focused conversation surface for Alfred.'
+        },
+        todos: {
+            title: 'To-Do',
+            kicker: 'Task management',
+            description: 'Plan and sort work in a dedicated task view.'
+        },
+        habits: {
+            title: 'Habits',
+            kicker: 'Progress tracker',
+            description: 'Track streaks in a cleaner, more legible dashboard.'
+        },
+        settings: {
+            title: 'Settings',
+            kicker: 'Configuration',
+            description: 'Manage AI, sync, and integrations from one place.'
+        }
+    },
+
     /**
      * Initialize the application
      */
@@ -27,10 +50,12 @@ const Alfred = {
         await SettingsFeature.initialize();
 
         // Update status indicator
+        // Activate the current hash tab and update the header
+        this.syncTabFromHash();
         ChatFeature.updateStatus();
 
         // Mark as ready
-        State.setInitialized = true;
+        State.isInitialized = true;
         console.log('[Alfred] Ready!');
 
         // Show welcome message if first run
@@ -53,27 +78,64 @@ const Alfred = {
                 const tabId = item.dataset.tab;
                 if (!tabId) return;
 
-                // Update active nav
-                navItems.forEach(n => n.classList.remove('active'));
-                item.classList.add('active');
-
-                // Show tab content
-                document.querySelectorAll('.tab-content').forEach(content => {
-                    content.classList.remove('active');
-                });
-
-                const tabContent = document.getElementById(tabId);
-                if (tabContent) {
-                    tabContent.classList.add('active');
-                }
-
-                // Update state
-                State.setCurrentTab(tabId);
-
-                // Refresh data when switching tabs
-                this.refreshTabData(tabId);
+                window.location.hash = tabId;
             });
         });
+
+        window.addEventListener('hashchange', () => {
+            this.syncTabFromHash();
+        });
+    },
+
+    /**
+     * Read the active tab from the URL hash
+     */
+    getTabFromHash() {
+        const hash = window.location.hash.replace('#', '');
+        return this.tabMeta[hash] ? hash : 'chat';
+    },
+
+    /**
+     * Activate a tab and update the view chrome
+     */
+    activateTab(tabId, updateHash = true) {
+        const validTab = this.tabMeta[tabId] ? tabId : 'chat';
+        const navItems = document.querySelectorAll('.nav-item');
+
+        navItems.forEach(navItem => {
+            const isActive = navItem.dataset.tab === validTab;
+            navItem.classList.toggle('active', isActive);
+            navItem.setAttribute('aria-current', isActive ? 'page' : 'false');
+        });
+
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.toggle('active', content.id === validTab);
+        });
+
+        const meta = this.tabMeta[validTab];
+        const title = document.getElementById('active-tab-title');
+        const kicker = document.getElementById('active-tab-kicker');
+        const description = document.getElementById('active-tab-description');
+
+        if (title) title.textContent = meta.title;
+        if (kicker) kicker.textContent = meta.kicker;
+        if (description) description.textContent = meta.description;
+
+        document.title = `Alfred - ${meta.title}`;
+        State.setCurrentTab(validTab);
+
+        if (updateHash && window.location.hash.replace('#', '') !== validTab) {
+            window.location.hash = validTab;
+        }
+
+        this.refreshTabData(validTab);
+    },
+
+    /**
+     * Sync the active tab from the hash
+     */
+    syncTabFromHash() {
+        this.activateTab(this.getTabFromHash(), false);
     },
 
     /**
@@ -119,7 +181,7 @@ const Alfred = {
                 e.preventDefault();
                 const chatInput = document.getElementById('chat-input');
                 if (chatInput) {
-                    document.getElementById('chat').click();
+                    this.activateTab('chat');
                     setTimeout(() => chatInput.focus(), 100);
                 }
             }
@@ -135,7 +197,7 @@ const Alfred = {
         document.addEventListener('visibilitychange', () => {
             if (!document.hidden) {
                 // Tab became visible - refresh data
-                this.refreshTabData(State.currentTab);
+                this.activateTab(State.currentTab || this.getTabFromHash(), false);
             }
         });
     },
