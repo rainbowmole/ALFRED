@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alfred - Your Personal AI Assistant</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></link>
+  <style>
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .nav-item.active { background-color: #374151; }
+  </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+  <div class="flex h-screen">
+    <!-- Sidebar Navigation -->
+    <nav class="w-64 bg-gray-800 flex flex-col">
+      <div class="p-4 border-b border-gray-700">
+        <h1 class="text-2xl font-bold text-amber-500">🤖 Alfred</h1>
+        <p class="text-xs text-gray-400 mt-1">Your Personal AI Assistant</p>
+      </div>
+
+      <div class="flex-1 py-4">
+        <a href="#chat" class="nav-item active block px-4 py-3 hover:bg-gray-700 transition" data-tab="chat">
+          💬 Chat
+        </a>
+        <a href="#todos" class="nav-item block px-4 py-3 hover:bg-gray-700 transition" data-tab="todos">
+          ✅ To-Do
+        </a>
+        <a href="#habits" class="nav-item block px-4 py-3 hover:bg-gray-700 transition" data-tab="habits">
+          📊 Habits
+        </a>
+        <a href="#settings" class="nav-item block px-4 py-3 hover:bg-gray-700 transition" data-tab="settings">
+          ⚙️ Settings
+        </a>
+      </div>
+
+      <div class="p-4 border-t border-gray-700">
+        <div id="status-indicator" class="text-xs text-gray-400">
+          <span class="inline-block w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+          <span id="status-text">Ready</span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-auto">
+      <!-- Chat Tab -->
+      <div id="chat" class="tab-content active h-full flex flex-col">
+        <div class="flex-1 overflow-auto p-4" id="chat-messages">
+          <div class="max-w-3xl mx-auto space-y-4">
+            <div class="flex items-start gap-3">
+              <div class="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center text-sm">🤖</div>
+              <div class="bg-gray-800 rounded-lg p-3 max-w-[80%]">
+                <p>Hello! I'm Alfred, your personal AI assistant. How can I help you today?</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="border-t border-gray-700 p-4">
+          <form id="chat-form" class="max-w-3xl mx-auto flex gap-2">
+            <input
+              type="text"
+              id="chat-input"
+              placeholder="Ask Alfred anything..."
+              class="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:border-amber-500"
+            >
+            <button type="submit" class="bg-amber-500 hover:bg-amber-600 px-4 py-2 rounded-lg font-medium transition">
+              Send
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- To-Do Tab -->
+      <div id="todos" class="tab-content p-6">
+        <div class="max-w-3xl mx-auto">
+          <h2 class="text-2xl font-bold mb-4">To-Do List</h2>
+          <form id="todo-form" class="flex gap-2 mb-6">
+            <input
+              type="text"
+              id="todo-input"
+              placeholder="Add a new task..."
+              class="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:border-amber-500"
+            >
+            <button type="submit" class="bg-amber-500 hover:bg-amber-600 px-4 py-2 rounded-lg font-medium transition">
+              Add Task
+            </button>
+          </form>
+          <div id="todo-list" class="space-y-2">
+            <p class="text-gray-400 text-center py-8">No tasks yet. Add one above!</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Habits Tab -->
+      <div id="habits" class="tab-content p-6">
+        <div class="max-w-3xl mx-auto">
+          <h2 class="text-2xl font-bold mb-4">Habit Tracker</h2>
+          <form id="habit-form" class="flex gap-2 mb-6">
+            <input
+              type="text"
+              id="habit-input"
+              placeholder="Add a new habit..."
+              class="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:border-amber-500"
+            >
+            <button type="submit" class="bg-amber-500 hover:bg-amber-600 px-4 py-2 rounded-lg font-medium transition">
+              Add Habit
+            </button>
+          </form>
+          <div id="habit-list" class="space-y-2">
+            <p class="text-gray-400 text-center py-8">No habits tracked yet. Add one above!</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings Tab -->
+      <div id="settings" class="tab-content p-6">
+        <div class="max-w-3xl mx-auto">
+          <h2 class="text-2xl font-bold mb-6">Settings</h2>
+
+          <div class="space-y-6">
+            <!-- Supabase Config -->
+            <section class="bg-gray-800 rounded-lg p-4">
+              <h3 class="text-lg font-semibold mb-3">Supabase Configuration</h3>
+              <div class="space-y-3">
+                <div>
+                  <label class="block text-sm text-gray-400 mb-1">Supabase URL</label>
+                  <input type="text" id="supabase-url" class="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2" placeholder="https://xxx.supabase.co">
+                </div>
+                <div>
+                  <label class="block text-sm text-gray-400 mb-1">Supabase Anon Key</label>
+                  <input type="text" id="supabase-key" class="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2" placeholder="eyJhbG...">
+                </div>
+                <div>
+                  <label class="block text-sm text-gray-400 mb-1">User ID</label>
+                  <input type="text" id="user-id" class="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2" placeholder="your@email.com">
+                </div>
+                <button id="save-supabase" class="bg-amber-500 hover:bg-amber-600 px-4 py-2 rounded-lg font-medium transition">
+                  Save Configuration
+                </button>
+              </div>
+            </section>
+
+            <!-- AI Provider Config -->
+            <section class="bg-gray-800 rounded-lg p-4">
+              <h3 class="text-lg font-semibold mb-3">AI Provider</h3>
+              <div class="space-y-3">
+                <div>
+                  <label class="block text-sm text-gray-400 mb-1">Primary Provider</label>
+                  <select id="ai-provider" class="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2">
+                    <option value="ollama-cloud">Ollama Cloud (Recommended)</option>
+                    <option value="ollama-local">Local Ollama</option>
+                    <option value="groq">Groq API</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-sm text-gray-400 mb-1">Model</label>
+                  <input type="text" id="ai-model" class="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2" value="qwen3.5:cloud" placeholder="qwen3.5:cloud">
+                </div>
+                <div id="groq-key-field" class="hidden">
+                  <label class="block text-sm text-gray-400 mb-1">Groq API Key</label>
+                  <input type="text" id="groq-key" class="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2" placeholder="gsk_...">
+                </div>
+                <button id="save-ai" class="bg-amber-500 hover:bg-amber-600 px-4 py-2 rounded-lg font-medium transition">
+                  Save AI Settings
+                </button>
+              </div>
+            </section>
+
+            <!-- Integration Buttons -->
+            <section class="bg-gray-800 rounded-lg p-4">
+              <h3 class="text-lg font-semibold mb-3">Integrations</h3>
+              <div class="space-y-3">
+                <button id="connect-gmail" class="w-full bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg font-medium transition">
+                  📧 Connect Gmail
+                </button>
+                <button id="connect-outlook" class="w-full bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-medium transition">
+                  📧 Connect Outlook
+                </button>
+                <button id="connect-google-cal" class="w-full bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg font-medium transition">
+                  📅 Connect Google Calendar
+                </button>
+                <div class="pt-2">
+                  <label class="block text-sm text-gray-400 mb-1">Notion Integration Token</label>
+                  <input type="text" id="notion-token" class="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2" placeholder="secret_xxx">
+                  <button id="save-notion" class="mt-2 bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg font-medium transition">
+                    Save Notion Token
+                  </button>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/ai/provider.js"></script>
+  <script src="js/features/chat.js"></script>
+  <script src="js/features/todos.js"></script>
+  <script src="js/features/habits.js"></script>
+  <script src="js/features/settings.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
