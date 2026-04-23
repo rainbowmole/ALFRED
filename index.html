@@ -13,14 +13,6 @@
 
   <div class="app-shell">
     <aside class="app-sidebar">
-      <div class="brand-panel">
-        <div class="brand-mark">🤖</div>
-        <div>
-          <h1>Alfred</h1>
-          <p>Your personal AI assistant</p>
-        </div>
-      </div>
-
       <nav class="tab-nav" aria-label="Primary navigation">
         <a href="#chat" class="nav-item active" data-tab="chat">💬 Chat</a>
         <a href="#todos" class="nav-item" data-tab="todos">✅ To-Do</a>
@@ -213,6 +205,21 @@
                   <input type="text" id="notion-token" class="stack-input" placeholder="secret_xxx">
                 </div>
                 <button id="save-notion" class="primary-button accent">Save Notion Token</button>
+              </div>
+            </section>
+
+            <section class="settings-card">
+              <h4>Appearance</h4>
+              <div class="stack-form compact">
+                <div class="field-group">
+                  <label for="theme-mode">Theme</label>
+                  <select id="theme-mode" class="stack-input">
+                    <option value="auto">Auto (Time-based)</option>
+                    <option value="dark">Dark</option>
+                    <option value="light">Light</option>
+                  </select>
+                </div>
+                <button id="save-theme" class="primary-button">Save Appearance</button>
               </div>
             </section>
           </div>

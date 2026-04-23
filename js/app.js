@@ -35,6 +35,7 @@ const Alfred = {
 
         // Initialize state
         await State.initialize();
+        this.applyTheme();
 
         // Setup UI
         this.setupNavigation();
@@ -196,10 +197,32 @@ const Alfred = {
         // Handle visibility change (tab switch)
         document.addEventListener('visibilitychange', () => {
             if (!document.hidden) {
+                this.applyTheme();
                 // Tab became visible - refresh data
                 this.activateTab(State.currentTab || this.getTabFromHash(), false);
             }
         });
+    },
+
+    /**
+     * Resolve active theme from user mode and local time
+     */
+    resolveTheme(mode = State.themeMode || 'auto') {
+        if (mode === 'light' || mode === 'dark') return mode;
+
+        const hour = new Date().getHours();
+        return hour >= 7 && hour < 19 ? 'light' : 'dark';
+    },
+
+    /**
+     * Apply theme attributes to document
+     */
+    applyTheme(mode = State.themeMode || Storage.getThemeMode()) {
+        const root = document.documentElement;
+        const resolvedTheme = this.resolveTheme(mode);
+
+        root.setAttribute('data-theme-mode', mode);
+        root.setAttribute('data-theme', resolvedTheme);
     },
 
     /**

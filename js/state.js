@@ -16,6 +16,7 @@ const State = {
     // AI Provider state
     aiProvider: 'ollama-cloud',
     aiModel: 'phi3',
+    themeMode: 'auto',
     isLocalMode: false,
     cloudLimitReached: false,
 
@@ -100,6 +101,11 @@ const State = {
         this.notify('aiModel', model);
     },
 
+    setThemeMode(mode) {
+        this.themeMode = mode;
+        this.notify('themeMode', mode);
+    },
+
     setLocalMode(enabled) {
         this.isLocalMode = enabled;
         this.notify('isLocalMode', enabled);
@@ -160,6 +166,7 @@ const State = {
         this.userId = Storage.getUserId();
         this.aiProvider = Storage.getAIProvider();
         this.aiModel = Storage.getAIModel();
+        this.themeMode = Storage.getThemeMode();
 
         // Set up online/offline listeners
         window.addEventListener('online', () => this.setOnlineStatus(true));

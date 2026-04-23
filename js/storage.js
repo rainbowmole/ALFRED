@@ -150,10 +150,20 @@ const Storage = {
 
     getPreferences() {
         return this.get(this.KEYS.PREFERENCES, {
-            theme: 'dark',
+            themeMode: 'auto',
             notifications: true,
             localMode: false
         });
+    },
+
+    getThemeMode() {
+        const mode = this.getPreferences().themeMode;
+        return ['auto', 'dark', 'light'].includes(mode) ? mode : 'auto';
+    },
+
+    setThemeMode(mode) {
+        if (!['auto', 'dark', 'light'].includes(mode)) return;
+        this.setPreferences({ themeMode: mode });
     },
 
     setPreferences(prefs) {

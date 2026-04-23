@@ -36,6 +36,12 @@ const SettingsFeature = {
             saveAiBtn.addEventListener('click', () => this.saveAiSettings());
         }
 
+        // Save appearance settings
+        const saveThemeBtn = document.getElementById('save-theme');
+        if (saveThemeBtn) {
+            saveThemeBtn.addEventListener('click', () => this.saveThemeSettings());
+        }
+
         // Toggle local mode
         const localModeToggle = document.getElementById('local-mode-toggle');
         if (localModeToggle) {
@@ -104,6 +110,7 @@ const SettingsFeature = {
         // AI settings
         const aiProviderSelect = document.getElementById('ai-provider');
         const aiModelInput = document.getElementById('ai-model');
+        const themeModeSelect = document.getElementById('theme-mode');
         const groqKeyInput = document.getElementById('groq-key');
         const cloudflareKeyInput = document.getElementById('cloudflare-key');
         const cloudflareAccountInput = document.getElementById('cloudflare-account');
@@ -111,6 +118,7 @@ const SettingsFeature = {
 
         if (aiProviderSelect) aiProviderSelect.value = Storage.getAIProvider();
         if (aiModelInput) aiModelInput.value = Storage.getAIModel();
+        if (themeModeSelect) themeModeSelect.value = Storage.getThemeMode();
         if (groqKeyInput) groqKeyInput.value = Storage.getGroqKey() || '';
         if (cloudflareKeyInput) cloudflareKeyInput.value = Storage.getCloudflareKey() || '';
         if (cloudflareAccountInput) cloudflareAccountInput.value = Storage.get('alfred_cloudflare_account') || '';
@@ -194,6 +202,19 @@ const SettingsFeature = {
 
         State.setNotification('AI settings saved');
         ChatFeature.updateStatus();
+    },
+
+    /**
+     * Save appearance settings
+     */
+    saveThemeSettings() {
+        const mode = document.getElementById('theme-mode')?.value || 'auto';
+
+        Storage.setThemeMode(mode);
+        State.setThemeMode(mode);
+        Alfred.applyTheme(mode);
+
+        State.setNotification(`Theme set to ${mode}`);
     },
 
     /**
