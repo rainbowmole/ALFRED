@@ -11,13 +11,28 @@
 <body class="app-body text-white min-h-screen">
   <div class="app-background"></div>
 
+  <header class="app-topbar" aria-label="App top bar">
+    <button id="topbar-burger" class="icon-button" type="button" aria-label="Open menu" aria-controls="burger-drawer" aria-expanded="false">
+      ☰
+    </button>
+    <p id="topbar-model" class="topbar-model">Ollama Cloud • phi3</p>
+    <button id="topbar-settings" class="icon-button" type="button" aria-label="Open settings">
+      ⚙
+    </button>
+  </header>
+
   <div class="app-shell">
     <aside class="app-sidebar">
+      <button id="sidebar-collapse-toggle" class="sidebar-collapse-button" type="button" aria-label="Collapse sidebar" aria-expanded="true">
+        <span class="nav-icon">☰</span>
+        <span class="nav-label">Collapse</span>
+      </button>
+
       <nav class="tab-nav" aria-label="Primary navigation">
-        <a href="#chat" class="nav-item active" data-tab="chat">💬 Chat</a>
-        <a href="#todos" class="nav-item" data-tab="todos">✅ To-Do</a>
-        <a href="#habits" class="nav-item" data-tab="habits">📊 Habits</a>
-        <a href="#settings" class="nav-item" data-tab="settings">⚙️ Settings</a>
+        <a href="#chat" class="nav-item active" data-tab="chat"><span class="nav-icon">💬</span><span class="nav-label">Chat</span></a>
+        <a href="#todos" class="nav-item" data-tab="todos"><span class="nav-icon">✅</span><span class="nav-label">To-Do</span></a>
+        <a href="#habits" class="nav-item" data-tab="habits"><span class="nav-icon">📊</span><span class="nav-label">Habits</span></a>
+        <a href="#settings" class="nav-item" data-tab="settings"><span class="nav-icon">⚙️</span><span class="nav-label">Settings</span></a>
       </nav>
 
       <div class="sidebar-status">
@@ -29,74 +44,49 @@
     </aside>
 
     <main class="workspace">
-      <header class="workspace-header panel-card">
-        <div>
-          <p class="eyebrow" id="active-tab-kicker">Assistant workspace</p>
-          <h2 id="active-tab-title">Chat</h2>
-          <p id="active-tab-description">A focused conversation surface for Alfred.</p>
-        </div>
-        <div class="header-metadata">
-          <span class="chip">Single-shell app</span>
-          <span class="chip chip-muted">Hash routing enabled</span>
-        </div>
-      </header>
-
       <section id="chat" class="tab-content active view-panel" data-title="Chat" data-kicker="Assistant workspace" data-description="A focused conversation surface for Alfred.">
         <div class="view-layout view-layout-chat">
-          <article class="panel-card conversation-stage">
-            <div class="panel-head">
-              <div>
-                <p class="eyebrow">Conversation</p>
-                <h3>Chat with Alfred</h3>
-              </div>
-              <p class="panel-copy">One thread at a time, designed like a focused workspace instead of a long page.</p>
-            </div>
-
-            <div class="chat-stream" id="chat-messages">
-              <div class="message message-assistant">
-                <div class="message-avatar">🤖</div>
-                <div class="message-bubble">
-                  <p>Hello! I'm Alfred, your personal AI assistant. How can I help you today?</p>
-                </div>
-              </div>
-            </div>
+          <article class="conversation-stage">
+            <div class="chat-stream" id="chat-messages"></div>
 
             <div class="composer-shell">
               <form id="chat-form" class="composer-form">
-                <input
-                  type="text"
-                  id="chat-input"
-                  placeholder="Ask Alfred anything..."
-                  class="composer-input"
-                >
-                <button type="submit" class="primary-button">Send</button>
+                <div class="composer-input-shell" aria-label="Chat input controls">
+                  <button id="chat-plus-button" class="composer-tool-button" type="button" aria-label="Add attachment">
+                    +
+                  </button>
+                  <input
+                    type="text"
+                    id="chat-input"
+                    placeholder="Alfred at your service"
+                    class="composer-input"
+                  >
+                  <button id="chat-mic-button" class="composer-tool-button" type="button" aria-label="Voice input">
+                    🎤
+                  </button>
+                </div>
               </form>
             </div>
           </article>
 
-          <aside class="panel-card side-rail">
+          <aside id="conversation-drawer" class="panel-card side-rail" aria-label="Conversation list">
             <div class="panel-head stacked">
               <div>
-                <p class="eyebrow">Focus</p>
-                <h3>What this view does</h3>
+                <p class="eyebrow">Threads</p>
+                <h3>Conversations</h3>
               </div>
-              <p class="panel-copy">The chat tab is now a dedicated workspace with its own hierarchy and breathing room.</p>
+              <p class="panel-copy">Pick a thread or start a fresh conversation to keep context clean.</p>
             </div>
 
-            <div class="info-stack">
-              <div class="mini-card">
-                <span class="mini-label">Shortcut</span>
-                <strong>Ctrl + K</strong>
-                <p>Jump straight back into chat from anywhere.</p>
-              </div>
-              <div class="mini-card">
-                <span class="mini-label">Routing</span>
-                <strong>Hash-based tabs</strong>
-                <p>Each section now has its own addressable state.</p>
-              </div>
+            <button id="new-conversation-button" class="primary-button conversation-new-button" type="button">New chat</button>
+
+            <div id="conversation-list" class="conversation-list">
+              <p class="empty-state">No conversations yet. Start one above.</p>
             </div>
           </aside>
         </div>
+
+        <button id="conversation-drawer-backdrop" class="conversation-drawer-backdrop" type="button" aria-label="Close conversations"></button>
       </section>
 
       <section id="todos" class="tab-content view-panel" data-title="To-Do" data-kicker="Task management" data-description="Plan and sort work in a dedicated task view.">
@@ -152,6 +142,21 @@
           </div>
 
           <div class="settings-grid">
+            <section class="settings-card">
+              <h4>Account</h4>
+              <div class="stack-form compact">
+                <div class="field-group">
+                  <label for="account-name">Account Name</label>
+                  <input type="text" id="account-name" class="stack-input" placeholder="Your name">
+                </div>
+                <div class="field-group">
+                  <label for="account-phone">Phone Number</label>
+                  <input type="tel" id="account-phone" class="stack-input" placeholder="+1 555 000 0000">
+                </div>
+                <button id="save-profile" class="primary-button">Save Account</button>
+              </div>
+            </section>
+
             <section class="settings-card">
               <h4>Supabase Configuration</h4>
               <div class="stack-form compact">
@@ -228,6 +233,45 @@
     </main>
   </div>
 
+  <aside id="burger-drawer" class="burger-drawer" aria-label="Quick menu" aria-hidden="true">
+    <div class="burger-drawer-head">
+      <button id="drawer-settings-btn" class="secondary-button" type="button">⚙️ Settings</button>
+      <button id="burger-close" class="icon-button" type="button" aria-label="Close menu">✕</button>
+    </div>
+
+    <div class="drawer-tabs" aria-label="Quick tabs">
+      <button class="drawer-link" type="button" data-tab="chat">Chat</button>
+      <button class="drawer-link" type="button" data-tab="todos">To-Do</button>
+      <button class="drawer-link" type="button" data-tab="habits">Habits</button>
+    </div>
+
+    <section class="drawer-panel">
+      <div class="drawer-title-row">
+        <h3>To-Do</h3>
+        <button class="drawer-link" type="button" data-tab="todos">Open</button>
+      </div>
+      <form id="drawer-todo-form" class="drawer-form">
+        <input id="drawer-todo-input" type="text" class="stack-input" placeholder="Add a task...">
+        <button type="submit" class="primary-button">Add</button>
+      </form>
+      <div id="drawer-todo-list" class="drawer-list"></div>
+    </section>
+
+    <section class="drawer-panel">
+      <div class="drawer-title-row">
+        <h3>Habits</h3>
+        <button class="drawer-link" type="button" data-tab="habits">Open</button>
+      </div>
+      <form id="drawer-habit-form" class="drawer-form">
+        <input id="drawer-habit-input" type="text" class="stack-input" placeholder="Add a habit...">
+        <button type="submit" class="primary-button">Add</button>
+      </form>
+      <div id="drawer-habit-list" class="drawer-list"></div>
+    </section>
+  </aside>
+
+  <button id="burger-backdrop" class="burger-backdrop" type="button" aria-label="Close menu"></button>
+
   <div id="notification-container" class="notification-container"></div>
 
   <script src="js/storage.js"></script>
@@ -241,6 +285,7 @@
   <script src="js/features/todos.js"></script>
   <script src="js/features/habits.js"></script>
   <script src="js/features/settings.js"></script>
+  <script src="js/features/navigation-shell.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

@@ -22,6 +22,11 @@ const SettingsFeature = {
             saveSupabaseBtn.addEventListener('click', () => this.saveSupabaseConfig());
         }
 
+        const saveProfileBtn = document.getElementById('save-profile');
+        if (saveProfileBtn) {
+            saveProfileBtn.addEventListener('click', () => this.saveProfileSettings());
+        }
+
         // AI provider change
         const aiProviderSelect = document.getElementById('ai-provider');
         if (aiProviderSelect) {
@@ -102,10 +107,14 @@ const SettingsFeature = {
         const supabaseUrlInput = document.getElementById('supabase-url');
         const supabaseKeyInput = document.getElementById('supabase-key');
         const userIdInput = document.getElementById('user-id');
+        const accountNameInput = document.getElementById('account-name');
+        const accountPhoneInput = document.getElementById('account-phone');
 
         if (supabaseUrlInput) supabaseUrlInput.value = supabaseConfig.url || '';
         if (supabaseKeyInput) supabaseKeyInput.value = supabaseConfig.key || '';
         if (userIdInput) userIdInput.value = Storage.getUserId() || '';
+        if (accountNameInput) accountNameInput.value = Storage.get('alfred_account_name', '');
+        if (accountPhoneInput) accountPhoneInput.value = Storage.get('alfred_account_phone', '');
 
         // AI settings
         const aiProviderSelect = document.getElementById('ai-provider');
@@ -185,6 +194,19 @@ const SettingsFeature = {
     },
 
     /**
+     * Save account profile settings
+     */
+    saveProfileSettings() {
+        const accountName = document.getElementById('account-name')?.value.trim() || '';
+        const accountPhone = document.getElementById('account-phone')?.value.trim() || '';
+
+        Storage.set('alfred_account_name', accountName);
+        Storage.set('alfred_account_phone', accountPhone);
+
+        State.setNotification('Account settings saved');
+    },
+
+    /**
      * Save AI settings
      */
     saveAiSettings() {
@@ -199,6 +221,9 @@ const SettingsFeature = {
         if (groqKey) Storage.setGroqKey(groqKey);
         if (cloudflareKey) Storage.setCloudflareKey(cloudflareKey);
         if (cloudflareAccount) Storage.set('alfred_cloudflare_account', cloudflareAccount);
+
+        if (provider) State.setAIProvider(provider);
+        if (model) State.setAIModel(model);
 
         State.setNotification('AI settings saved');
         ChatFeature.updateStatus();

@@ -49,6 +49,7 @@ const Alfred = {
         await TodosFeature.initialize();
         await HabitsFeature.initialize();
         await SettingsFeature.initialize();
+        await NavigationShell.initialize();
 
         // Update status indicator
         // Activate the current hash tab and update the header
@@ -229,26 +230,7 @@ const Alfred = {
      * Show welcome message for first-time users
      */
     async showWelcome() {
-        const welcomeMessage = `👋 Welcome to Alfred!
-
-I'm your personal AI assistant. Here's what I can help you with:
-
-💬 **Chat** - Talk to me anytime. I remember everything!
-✅ **To-Do** - Track your tasks and goals
-📊 **Habits** - Build streaks and track progress
-⚙️ **Settings** - Configure AI providers and integrations
-
-**Quick Start:**
-1. Go to Settings and add your Supabase credentials for sync
-2. Add a Groq API key for iOS access (free at console.groq.com)
-3. Start chatting! I use cloud AI by default, with local fallback
-
-Press Ctrl+K to quickly focus the chat from anywhere.`;
-
-        // Add welcome to chat
-        setTimeout(() => {
-            ChatFeature.addMessageToUI('assistant', welcomeMessage);
-        }, 500);
+        State.setNotification('Welcome to Alfred');
     },
 
     /**
